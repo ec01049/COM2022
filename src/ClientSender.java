@@ -273,10 +273,16 @@ public class ClientSender {
 
                 }
 
-
-
                 if (incomingType.equals("recipient_username")) {
-                    recipientUsername  = jsonObject.get("content").toString();
+
+                    recipientUsername = (String) jsonObject.get("content");
+
+                    byte[] decodedUsername = Base64.getDecoder().decode(recipientUsername.getBytes(StandardCharsets.ISO_8859_1));
+
+                    PrivateKey privateKey = (PrivateKey) ClientSender.keyPair.get("private");
+
+                    String decryptedUsername = decryptMessage(decodedUsername, privateKey);
+                    System.out.println("Recipient Username: \n" + decryptedUsername);
                 }
 
                 sendAck(receiverAddress, port);
@@ -294,9 +300,6 @@ public class ClientSender {
                 System.out.println("\nReceived Recipient Public Key");
             }
 
-            if (incomingType.equals("recipient_username")) {
-                System.out.println("\nReceived Username :\n" + recipientUsername);
-            }
 
             if (incomingType.equals("fin")) {
                 System.out.println("\nConnection Terminated");

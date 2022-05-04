@@ -187,10 +187,12 @@ public class ClientReceiver {
             System.out.println("\nRequest for Username...");
 
             String localUsername = "Eve";
+            byte[] encryptedUsername = encryptMessage(localUsername, this.senderKey);
+            var encodedUsername = new String(Base64.getEncoder().encode(encryptedUsername), StandardCharsets.ISO_8859_1);
 
             JSONObject usernameData = new JSONObject();
             usernameData.put("type", "recipient_username");
-            usernameData.put("content", localUsername);
+            usernameData.put("content", encodedUsername);
 
             System.out.println("\nSending username...");
             response = usernameData.toJSONString();
@@ -201,10 +203,7 @@ public class ClientReceiver {
 
             String greetingResponse = "Thank you for your greeting";
             byte[] encryptedMessage = encryptMessage(greetingResponse, this.senderKey);
-
-
             var encodedResponse = new String(Base64.getEncoder().encode(encryptedMessage), StandardCharsets.ISO_8859_1);
-
 
             JSONObject greetingData = new JSONObject();
             greetingData.put("type", "message");
